@@ -1,0 +1,19 @@
+@startuml Authentication_flow
+
+actor Browser
+participant Server
+database Database
+
+Browser -> Server: POST /auth/signin{username, password} 
+Server -> Database: SELECT user WHERE username = <username>
+Database --> Server: Return user_data
+Server -> Server: Validate password and generate JWT token
+Server --> Browser: Return token
+
+Browser -> Server: GET /me Authorization: Bearer JWT
+Server -> Server: Validate JWT token
+Server -> Database: SELECT user_information WHERE user_id = <user_id>
+Database --> Server: Return user_information
+Server --> Browser: Return user_information
+
+@enduml
